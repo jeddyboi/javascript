@@ -289,19 +289,16 @@
   //   }, {
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
-  _.extend = function(obj, source, source2) {
+  _.extend = function(obj) {
 
+    var newObjs=Array.prototype.slice.call(arguments, 1);
 
-    for (var key in source) {
-      obj[key] = source[key];
-    }
-    for (var key in source2) {
-      obj[key] = source2[key];
-    }
-
+    _.each(newObjs, function(otherObj) {
+      _.each(otherObj, function(val, key) {
+        obj[key]=val;
+      });
+    });
     return obj;
-
-
 
   };
 
