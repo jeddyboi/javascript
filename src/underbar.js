@@ -291,32 +291,32 @@
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
 
-    var newObjs=Array.prototype.slice.call(arguments, 1);
+    var newObjs=Array.prototype.slice.call(arguments);
 
-    _.each(newObjs, function(otherObj) {
-      _.each(otherObj, function(val, key) {
-        obj[key]=val;
-      });
+    _.each(newObjs, function(item) {
+        _.each(item, function(value, key){
+          obj[key] = value;
+        });
     });
+
     return obj;
 
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
-  _.defaults = function(obj, source, source1, source2) {
+  _.defaults = function(obj) {
 
-   var actualArray = Object.entries(source);
+    var newObjs=Array.prototype.slice.call(arguments);
 
-   if (source1 && source2) {
-       actualArray = actualArray.concat(Object.entries(source1),Object.entries(source2));
-   }
+    _.each(newObjs, function(item) {
+        _.each(item, function(value, key){
+          if(!obj.hasOwnProperty(key)){
+              obj[key] = value;
+          }
+        });
+    });
 
-   for (var i = 0; i < actualArray.length; i++) {
-      if ( !obj.hasOwnProperty(actualArray[i][0]) ) {
-          obj[actualArray[i][0]] = actualArray[i][1]
-      }
-   }
     return obj;
   };
 
