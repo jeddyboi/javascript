@@ -83,11 +83,12 @@
   _.filter = function(collection, test) {
       var array = [];
 
-      for ( var i = 0; i < collection.length; i++) {
-        if (test(collection[i])) {
-          array.push(collection[i])
-        }
-      }
+      _.each(collection, function(item){
+          if(test(item)) {
+            array.push(item)
+          }
+      });
+
       return array;
 
   };
@@ -98,11 +99,13 @@
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
       var array = [];
-      for ( var i = 0; i < collection.length; i++) {
-          if(!test(collection[i])) {
-            array.push(collection[i])
-          }
-      }
+
+      _.each(collection, function(item){
+        if(!test(item)){
+          array.push(item)
+        }
+      })
+
       return array;
   };
 
@@ -121,27 +124,24 @@
       // });
 
   // Produce a duplicate-free version of the array.
-  _.uniq = function(array, isSorted, iterator) {
-    if (typeof iterator === 'function') {
-      var arr = [];
+  _.uniq = function(array,isSorted, iterator) {
 
-       array.reduce(function(obj, element) {
-          obj[iterator(element)] === undefined ? obj[iterator(element)] = 1 && arr.push(element) : obj;
-          return obj;
-       }, {});
-       return arr;
+    var arr = [];
+    var arr2 = []
 
-      } else {
-
-      return array.sort(function(a,b){ return a - b}).reduce(function(prev, next){
-          var len = prev.length;
-          if (len === 0 || prev[len - 1] !== next) {
-            prev.push(next)
+    _.each(array, function(item){
+        if (iterator){
+          if(_.indexOf(arr2,iterator(item)) === -1) {
+            arr2.push(iterator(item))
+            arr.push(item)
           }
-          return prev;
-      }, []);
-    }
-
+        } else {
+          if (_.indexOf(arr,item)) {
+            arr.push(item);
+          }
+        } 
+    })
+    return arr;
   }
 
 
@@ -151,10 +151,11 @@
     // like each(), but in addition to running the operation on all
     // the members, it also maintains an array of results.
       var array = [];
-      for ( var i = 0; i < collection.length; i++ ) {
 
-          array.push(iterator(collection[i]));
-      }
+      _.each(collection, function(item){
+        array.push(iterator(item))
+      })
+
       return array;
   };
 
@@ -289,26 +290,44 @@
   //   }, {
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
-  _.extend = function(obj) {
 
+   _.extend = function(obj, ...args) {
+
+    var newObj = Object.assign(obj, ...args)
+
+    return obj;
+  }
+
+ /*
+   _.extend = function(obj) {
     var newObjs=Array.prototype.slice.call(arguments);
-
     _.each(newObjs, function(item) {
         _.each(item, function(value, key){
           obj[key] = value;
         });
     });
-
     return obj;
 
-  };
+  };*/
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
+
+  // _.defaults = function(obj, ...args) {
+
+  //   var newObjs= Object.assign(...args);
+  //   _.each(newObjs, function(val , key) {
+  //       console.log(newObjs , obj)
+  //       if(!obj.hasOwnProperty(key)){
+  //          obj[key] = val;
+  //       }
+  //   });
+  //   return obj;
+  // };
+
+
   _.defaults = function(obj) {
-
     var newObjs=Array.prototype.slice.call(arguments);
-
     _.each(newObjs, function(item) {
         _.each(item, function(value, key){
           if(!obj.hasOwnProperty(key)){
@@ -316,7 +335,6 @@
           }
         });
     });
-
     return obj;
   };
 
@@ -362,19 +380,15 @@
   // instead if possible.
   _.memoize = function(func) {
     var cache = {};
-    return function() {
+
+    return function(){
       var key = JSON.stringify(arguments);
-      if(cache[key]) {
-        return cache[key];
-      }
-      else {
+      if (!cache[key]){
         var val = func.apply(this, arguments);
-        cache[key] = val;
-        return val;
+        cache[key] = val
       }
-  };
-
-
+      return cache[key];
+    };
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -401,7 +415,7 @@
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
 
-      var newArray = array.slice(0);
+      var newArray = Array.prototype.slice.call(array, 0);
       var a, b, i;
       for (i = newArray.length - 1; i > 0; i--) {
 
@@ -426,7 +440,7 @@
   // Calls the method named by functionOrKey on each value in the list.
   // Note: You will need to learn a bit about .apply to complete this.
   _.invoke = function(collection, functionOrKey, args) {
-
+    
     var array = []
     for ( var i = 0; i < collection.length; i++) {
       if (typeof functionOrKey === 'function') {
@@ -510,16 +524,6 @@
   // Takes an arbitrary number of arrays and produces an array that contains
   // every item shared between all the passed-in arrays.
   _.intersection = function(arr, arr2) {
-
-//input = array
-//output = array
-//obj = copy item that is in both arrays
-
-
-//loop through first array
-  // loop through second array
-    //if they same add to new array
-//return new array
 
     var array = [];
 
