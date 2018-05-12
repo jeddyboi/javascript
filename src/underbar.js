@@ -440,7 +440,7 @@
   // Calls the method named by functionOrKey on each value in the list.
   // Note: You will need to learn a bit about .apply to complete this.
   _.invoke = function(collection, functionOrKey, args) {
-    
+
     var array = []
     for ( var i = 0; i < collection.length; i++) {
       if (typeof functionOrKey === 'function') {
@@ -494,12 +494,13 @@
   //
   // Example:
   // _.zip(['a','b','c','d'], [1,2,3]) returns [['a',1], ['b',2], ['c',3], ['d',undefined]]
-  _.zip = function(names, ages, leaders) {
-    var len = Math.max(names.length, ages.length, leaders.length)
+  _.zip = function() {
+
+    var args = Array.prototype.slice.call(arguments);
     var array = [];
 
-    for ( var i = 0; i < len; i++) {
-      array.push([names[i], ages[i], leaders[i]]);
+    for ( var i = 0; i < args[0].length; i++) {
+      array.push([args[0][i], args[1][i], args[2][i]]);
     }
     return array;
   };
@@ -523,41 +524,36 @@
 
   // Takes an arbitrary number of arrays and produces an array that contains
   // every item shared between all the passed-in arrays.
-  _.intersection = function(arr, arr2) {
+  _.intersection = function() {
 
     var array = [];
+    var args = Array.prototype.slice.call(arguments);
 
-    for ( var i = 0; i < arr.length; i++ ) {
-      for ( var j = 0; j < arr2.length; j++) {
-          if (arr2[j] === arr[i]) {
-            array.push(arr[i])
-          }
-      }
-    } 
+
+    _.each(args[0], function(item){
+      _.each(args[1], function(item2){
+        if(item === item2){
+          array.push(item)
+        }
+
+      })
+    })
     return array;
   };
 
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
-  _.difference = function(array, array2, array3) {
+  _.difference = function(array) {
     var arr = [];
-    var counter = 0;
-    if (array3) {
-      array2 = array2.concat(array3);
-    }
 
-    for ( var i = 0; i < array.length; i++) {
-      for ( var j = 0; j < array2.length; j++) {
-          if (array[i] === array2[j]) {
-            counter++;
-          }
-      }
+    var array2 = Array.prototype.slice.call(arguments, 1).join(':').split(/\,|\:/g);
 
-      if (counter === 0) {
-        arr.push(array[i]);
-      }
-      counter = 0;
-    }
+    _.each(array, function(item){
+        if(_.indexOf(array2, String(item)) === -1){
+          arr.push(item);
+        }
+    });
+
     return arr;
   };
 
